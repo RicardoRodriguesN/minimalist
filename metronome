@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <title>Metronome Minimal</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    :root {
+      --bg: #050509;
+      --card-bg: #0e0e16;
+      --accent: #ffffff;
+      --accent-soft: #3a3a4a;
+      --accent-muted: #8a8aa0;
+      --danger: #ff4b4b;
+      --radius: 18px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #141424 0, #050509 60%);
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .wrapper {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .card {
+      background: linear-gradient(145deg, #0d0d15, #06060c);
+      border-radius: var(--radius);
+      padding: 20px 18px 18px;
+      box-shadow:
+        0 20px 40px rgba(0, 0, 0, 0.7),
+        0 0 0 1px rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .title {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent-muted);
+    }
+
+    .indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent-muted);
+    }
+
+    .indicator-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--accent-soft);
+      opacity: 0.6;
+      transition: opacity 0.15s ease, transform 0.08s ease;
+    }
+
+    .indicator-dot.active {
+      opacity: 1;
+      transform: scale(1.35);
+    }
+
+    .display {
+      text-align: center;
+      padding: 10px 0 14px;
+    }
+
+    .bpm-label {
+      font-size: 11px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--accent-muted);
+      margin-bottom: 4px;
+    }
+
+    .bpm-value {
+      font-size: 52px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .bpm-unit {
+      font-size: 14px;
+      margin-left: 6px;
+      color: var(--accent-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--accent-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    .bpm-input {
+      width: 70px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: #090912;
+      color: var(--accent);
+      font-size: 13px;
+      text-align: center;
+      outline: none;
+    }
+
+    .bpm-input:focus {
+      border-color: var(--accent);
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 999px;
+      background: #1f1f2a;
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #050509;
+      margin-top: -5px;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--accent);
+      border: 2px solid #050509;
+      box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.04);
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 6px;
+      gap: 8px;
+    }
+
+    .btn {
+      flex: 1;
+      border-radius: 999px;
+      border: 0;
+      padding: 9px 0;
+      font-size: 12px;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      cursor: pointer;
+      background: #ffffff;
+      color: #050509;
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.15s ease,
+        color 0.15s ease;
+      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn:active {
+      transform: translateY(1px) scale(0.99);
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
+    }
+
+    .btn.stop {
+      background: var(--danger);
+      color: #050509;
+    }
+
+    .btn-icon {
+      font-size: 13px;
+      display: inline-block;
+      width: 12px;
+      text-align: center;
+    }
+
+    .small-note {
+      font-size: 10px;
+      color: var(--accent-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      white-space: nowrap;
+    }
+
+    @media (max-width: 400px) {
+      .card {
+        padding: 18px 14px 16px;
+      }
+
+      .bpm-value {
+        font-size: 46px;
+      }
+
+      .btn {
+        font-size: 11px;
+      }
+
+      .small-note {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrapper">
+    <div class="card">
+      <div class="header">
+        <div class="title">Minimal Metronome</div>
+        <div class="indicator">
+          <div class="indicator-dot" id="beat-indicator"></div>
+          BEAT
+        </div>
+      </div>
+
+      <div class="display">
+        <div class="bpm-label">Tempo</div>
+        <div>
+          <span class="bpm-value" id="bpm-display">100</span>
+          <span class="bpm-unit">BPM</span>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="slider-row">
+          <div class="slider-header">
+            <span>BPM</span>
+            <input
+              class="bpm-input"
+              id="bpm-input"
+              type="number"
+              min="40"
+              max="220"
+              value="100"
+            />
+          </div>
+          <input
+            id="bpm-slider"
+            type="range"
+            min="40"
+            max="220"
+            value="100"
+          />
+        </div>
+
+        <div class="footer-row">
+          <button class="btn" id="toggle-btn">
+            <span class="btn-icon" id="btn-icon">▶</span>
+            <span id="btn-label">Play</span>
+          </button>
+          <div class="small-note">click to unlock audio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const bpmDisplay = document.getElementById("bpm-display");
+    const bpmInput = document.getElementById("bpm-input");
+    const bpmSlider = document.getElementById("bpm-slider");
+    const toggleBtn = document.getElementById("toggle-btn");
+    const btnLabel = document.getElementById("btn-label");
+    const btnIcon = document.getElementById("btn-icon");
+    const beatIndicator = document.getElementById("beat-indicator");
+
+    let isPlaying = false;
+    let intervalId = null;
+    let audioCtx = null;
+
+    function getIntervalMs(bpm) {
+      return (60_000) / bpm;
+    }
+
+    function setBpm(value) {
+      let bpm = parseInt(value, 10);
+      if (isNaN(bpm)) return;
+      if (bpm < 40) bpm = 40;
+      if (bpm > 220) bpm = 220;
+
+      bpmDisplay.textContent = bpm.toString();
+      bpmInput.value = bpm;
+      bpmSlider.value = bpm;
+
+      if (isPlaying) {
+        startMetronome(); // reinicia com novo BPM
+      }
+    }
+
+    function clickVisual() {
+      beatIndicator.classList.add("active");
+      setTimeout(() => {
+        beatIndicator.classList.remove("active");
+      }, 75);
+    }
+
+    function clickSound() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      const duration = 0.04; // 40ms
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+
+      osc.type = "square";
+      osc.frequency.value = 2000; // frequência mais "click"
+      gain.gain.setValueAtTime(0.35, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+
+      osc.connect(gain).connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function tick() {
+      clickSound();
+      clickVisual();
+    }
+
+    function startMetronome() {
+      const bpm = parseInt(bpmDisplay.textContent, 10);
+      const intervalMs = getIntervalMs(bpm);
+
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+
+      tick(); // já marca o primeiro beat
+      intervalId = setInterval(tick, intervalMs);
+    }
+
+    function stopMetronome() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    bpmInput.addEventListener("input", (e) => setBpm(e.target.value));
+    bpmSlider.addEventListener("input", (e) => setBpm(e.target.value));
+
+    toggleBtn.addEventListener("click", async () => {
+      // desbloqueia audio no primeiro clique em alguns browsers
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        try {
+          await audioCtx.resume();
+        } catch (e) {
+          console.error(e);
+        }
+      }
+
+      isPlaying = !isPlaying;
+
+      if (isPlaying) {
+        startMetronome();
+        toggleBtn.classList.add("stop");
+        btnLabel.textContent = "Stop";
+        btnIcon.textContent = "■";
+      } else {
+        stopMetronome();
+        toggleBtn.classList.remove("stop");
+        btnLabel.textContent = "Play";
+        btnIcon.textContent = "▶";
+      }
+    });
+
+    // garante BPM inicial
+    setBpm(100);
+  </script>
+</body>
+</html>
