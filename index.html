@@ -163,13 +163,56 @@
     .bpm-slider-row { margin-top: 4px; }
 
     .bpm-slider {
+      -webkit-appearance: none;
       width: 100%;
       height: 4px;
       border-radius: 999px;
-      background: #151522;
+      background: transparent;
       outline: none;
       cursor: pointer;
     }
+
+    /* Trilho – Chrome / Edge / Opera */
+    .bpm-slider::-webkit-slider-runnable-track {
+      background: #151522;          /* combina com o fundo dark */
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    /* Bolinha – Chrome / Edge / Opera */
+    .bpm-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #545496;          /* 🔹 tom roxo do metrônomo */
+      box-shadow: 0 0 0 3px rgba(84, 84, 150, 0.35);
+      margin-top: -5px;             /* centraliza no trilho */
+    }
+
+    /* Trilho – Firefox */
+    .bpm-slider::-moz-range-track {
+      background: #151522;
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    /* Parte preenchida – Firefox */
+    .bpm-slider::-moz-range-progress {
+      background: #545496;          /* mesma cor roxa preenchendo */
+      height: 4px;
+      border-radius: 999px;
+    }
+
+    /* Bolinha – Firefox */
+    .bpm-slider::-moz-range-thumb {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: #545496;
+      box-shadow: 0 0 0 3px rgba(84, 84, 150, 0.35);
+    }
+
 
     .time-select {
       width: 100%;
