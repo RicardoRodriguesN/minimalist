@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <title>Minimal Timer</title>
+  <title>Metronome Pro</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     :root {
@@ -34,7 +34,7 @@
 
     .wrapper {
       width: 100%;
-      max-width: 380px;
+      max-width: 420px;
     }
 
     .card {
@@ -51,7 +51,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 10px;
     }
 
     .title {
@@ -76,401 +76,365 @@
       height: 7px;
       border-radius: 50%;
       background: var(--accent-soft);
-      opacity: 0.6;
-      transition: opacity 0.15s ease, transform 0.08s ease;
+      opacity: 0.5;
+      transition: opacity 0.1s ease, transform 0.08s ease, background 0.1s ease;
     }
 
     .indicator-dot.active {
       opacity: 1;
-      transform: scale(1.35);
+      transform: scale(1.5);
+      background: #ffffff;
     }
 
-    .display {
-      text-align: center;
-      padding: 10px 0 14px;
+    .main {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-top: 4px;
     }
 
-    .time-label {
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .bpm-block { flex: 1.4; }
+    .ts-block { flex: 1; }
+
+    .bpm-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .bpm-label,
+    .ts-label {
       font-size: 11px;
-      letter-spacing: 0.2em;
       text-transform: uppercase;
+      letter-spacing: 0.16em;
       color: var(--accent-muted);
       margin-bottom: 4px;
     }
 
-    .time-value {
-      font-size: 52px;
-      font-weight: 600;
-      line-height: 1;
-      letter-spacing: 0.12em;
-    }
-
-    .controls {
+    .bpm-display {
       display: flex;
-      flex-direction: column;
-      gap: 10px;
-      margin-top: 6px;
-    }
-
-    .inputs-row {
-      display: flex;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .input-group {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
+      align-items: baseline;
       gap: 4px;
     }
 
-    .input-label {
-      font-size: 10px;
+    .bpm-value {
+      font-size: 32px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      min-width: 72px;
+      text-align: right;
+    }
+
+    .bpm-unit {
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.16em;
       color: var(--accent-muted);
     }
 
-    .time-input {
+    .bpm-controls {
+      display: flex;
+      gap: 6px;
+    }
+
+    .btn-round {
+      width: 32px;
+      height: 32px;
+      border-radius: 999px;
+      border: 1px solid var(--accent-soft);
+      background: rgba(255, 255, 255, 0.02);
+      color: var(--accent);
+      font-size: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.08s ease;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.6);
+    }
+
+    .bpm-slider-row { margin-top: 4px; }
+
+    .bpm-slider {
       width: 100%;
-      padding: 6px 10px;
+      height: 4px;
+      border-radius: 999px;
+      background: #151522;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .time-select {
+      width: 100%;
+      padding: 7px 10px;
       border-radius: 999px;
       border: 1px solid var(--accent-soft);
       background: #090912;
       color: var(--accent);
-      font-size: 13px;
-      text-align: center;
+      font-size: 12px;
       outline: none;
+      cursor: pointer;
     }
 
-    .time-input:focus {
-      border-color: var(--accent);
+    .beat-visualizer {
+      margin-top: 10px;
+      display: flex;
+      gap: 6px;
+      justify-content: center;
     }
 
-    .footer-row {
+    .beat-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #23233a;
+      opacity: 0.5;
+      transition: 0.1s ease;
+    }
+
+    .beat-dot.active {
+      opacity: 1;
+      transform: scale(1.4);
+      background: #ffffff;
+    }
+
+    .beat-dot.accent {
+      background: #545496;
+    }
+
+    .bottom-row {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-top: 6px;
-      gap: 8px;
+      margin-top: 10px;
+      gap: 10px;
     }
 
-    .btn {
-      flex: 1;
+    .btn-main {
       border-radius: 999px;
-      border: 0;
-      padding: 9px 0;
-      font-size: 12px;
-      letter-spacing: 0.18em;
+      padding: 10px 20px;
+      font-size: 11px;
       text-transform: uppercase;
       cursor: pointer;
       background: #ffffff;
       color: #050509;
       font-weight: 600;
-      display: inline-flex;
+      letter-spacing: 0.18em;
+      box-shadow: 0 14px 28px rgba(0, 0, 0, 0.75);
+      display: flex;
       align-items: center;
-      justify-content: center;
       gap: 8px;
-      transition: transform 0.08s ease, box-shadow 0.12s ease, background 0.15s ease,
-        color 0.15s ease;
-      box-shadow: 0 12px 24px rgba(0, 0, 0, 0.6);
     }
 
-    .btn:active {
-      transform: translateY(1px) scale(0.99);
-      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.6);
-    }
-
-    .btn.stop {
-      background: var(--danger);
-      color: #050509;
-    }
-
-    .btn-secondary {
-      flex: 0 0 auto;
-      min-width: 90px;
-      border-radius: 999px;
-      border: 1px solid var(--accent-soft);
-      padding: 8px 0;
+    .btn-main.secondary {
       background: transparent;
+      border: 1px solid var(--accent-soft);
       color: var(--accent-muted);
-      font-size: 11px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
+      box-shadow: none;
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       cursor: pointer;
-      transition: border-color 0.12s ease, color 0.12s ease, background 0.12s ease;
     }
 
-    .btn-secondary:hover {
-      border-color: var(--accent);
-      color: var(--accent);
-      background: rgba(255, 255, 255, 0.02);
-    }
-
-    .btn-icon {
-      font-size: 13px;
-      display: inline-block;
+    .checkbox-row input {
       width: 12px;
-      text-align: center;
+      height: 12px;
+      accent-color: #ffffff;
     }
 
-    .small-note {
+    .options {
+      margin-top: 8px;
       font-size: 10px;
       color: var(--accent-muted);
-      text-transform: uppercase;
       letter-spacing: 0.14em;
-      white-space: nowrap;
-    }
-
-    @media (max-width: 400px) {
-      .card {
-        padding: 18px 14px 16px;
-      }
-
-      .time-value {
-        font-size: 46px;
-      }
-
-      .btn {
-        font-size: 11px;
-      }
-
-      .small-note {
-        display: none;
-      }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <div class="card">
-      <div class="header">
-        <div class="title">Minimal Timer</div>
-        <div class="indicator">
-          <div class="indicator-dot" id="status-indicator"></div>
-          RUN
-        </div>
-      </div>
 
-      <div class="display">
-        <div class="time-label">Tempo restante</div>
-        <div class="time-value" id="time-display">00:00</div>
-      </div>
-
-      <div class="controls">
-        <div class="inputs-row">
-          <div class="input-group">
-            <span class="input-label">Minutos</span>
-            <input
-              class="time-input"
-              id="minutes-input"
-              type="number"
-              min="0"
-              max="999"
-              value="10"
-            />
-          </div>
-          <div class="input-group">
-            <span class="input-label">Segundos</span>
-            <input
-              class="time-input"
-              id="seconds-input"
-              type="number"
-              min="0"
-              max="59"
-              value="0"
-            />
-          </div>
-        </div>
-
-        <div class="footer-row">
-          <button class="btn" id="toggle-btn">
-            <span class="btn-icon" id="btn-icon">▶</span>
-            <span id="btn-label">Start</span>
-          </button>
-          <button class="btn-secondary" id="reset-btn">
-            Reset
-          </button>
-        </div>
-        <div class="footer-row" style="margin-top:4px;">
-          <div class="small-note">Defina o tempo e aperte Start</div>
-        </div>
+<div class="wrapper">
+  <div class="card">
+    <div class="header">
+      <div class="title">Metronome Pro</div>
+      <div class="indicator">
+        <div class="indicator-dot" id="status-indicator"></div>
+        <span id="status-label">Idle</span>
       </div>
     </div>
+
+    <div class="main">
+
+      <div class="top-row">
+        <div class="bpm-block">
+          <div class="bpm-label">Tempo</div>
+          <div class="bpm-row">
+            <div class="bpm-display">
+              <div class="bpm-value" id="bpm-value">100</div>
+              <div class="bpm-unit">BPM</div>
+            </div>
+            <div class="bpm-controls">
+              <button class="btn-round" id="bpm-down">−</button>
+              <button class="btn-round" id="bpm-up">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="ts-block">
+          <div class="ts-label">Compasso</div>
+          <select id="time-signature" class="time-select">
+            <option value="2">2/4</option>
+            <option value="3">3/4</option>
+            <option value="4" selected>4/4</option>
+            <option value="5">5/4</option>
+            <option value="7">7/8</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="bpm-slider-row">
+        <input type="range" min="40" max="240" value="100" class="bpm-slider" id="bpm-slider" />
+      </div>
+
+      <div class="beat-visualizer" id="beat-visualizer"></div>
+
+      <div class="bottom-row">
+        <button class="btn-main" id="start-stop"><span>▶</span> <span id="start-stop-label">Start</span></button>
+        <button class="btn-main secondary" id="reset">Reset</button>
+      </div>
+
+      <label class="checkbox-row options">
+        <input type="checkbox" id="accent-toggle" checked />
+        Acentuar 1º tempo
+      </label>
+
+    </div>
   </div>
+</div>
 
-  <script>
-    const timeDisplay = document.getElementById("time-display");
-    const minutesInput = document.getElementById("minutes-input");
-    const secondsInput = document.getElementById("seconds-input");
-    const toggleBtn = document.getElementById("toggle-btn");
-    const resetBtn = document.getElementById("reset-btn");
-    const btnLabel = document.getElementById("btn-label");
-    const btnIcon = document.getElementById("btn-icon");
-    const statusIndicator = document.getElementById("status-indicator");
+<script>
+  let audioCtx = null;
+  let isRunning = false;
+  let currentBeat = 0;
+  let beatsPerBar = 4;
 
-    let audioCtx = null;
-    let isRunning = false;
-    let intervalId = null;
-    let totalSeconds = 0;
-    let remainingSeconds = 0;
+  let bpm = 100;
+  let nextNoteTime = 0;
+  const scheduleAheadTime = 0.1;
+  const lookahead = 25;
+  let timerID = null;
 
-    function clampInputs() {
-      let mins = parseInt(minutesInput.value, 10);
-      let secs = parseInt(secondsInput.value, 10);
+  const bpmEl = document.getElementById("bpm-value");
+  const sliderEl = document.getElementById("bpm-slider");
+  const tsEl = document.getElementById("time-signature");
+  const accentEl = document.getElementById("accent-toggle");
+  const viz = document.getElementById("beat-visualizer");
 
-      if (isNaN(mins) || mins < 0) mins = 0;
-      if (mins > 999) mins = 999;
-      if (isNaN(secs) || secs < 0) secs = 0;
-      if (secs > 59) secs = 59;
+  let dots = [];
 
-      minutesInput.value = mins;
-      secondsInput.value = secs;
-
-      return { mins, secs };
+  function rebuildDots() {
+    viz.innerHTML = "";
+    dots = [];
+    for (let i = 0; i < beatsPerBar; i++) {
+      const dot = document.createElement("div");
+      dot.className = "beat-dot" + (i === 0 ? " accent" : "");
+      viz.appendChild(dot);
+      dots.push(dot);
     }
+  }
 
-    function computeTotalSeconds() {
-      const { mins, secs } = clampInputs();
-      totalSeconds = mins * 60 + secs;
-      if (totalSeconds < 0) totalSeconds = 0;
-      return totalSeconds;
+  function scheduleClick(time, accent) {
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+
+    osc.frequency.value = accent ? 2000 : 1300;
+    gain.gain.setValueAtTime(0, time);
+    gain.gain.linearRampToValueAtTime(1, time + 0.001);
+    gain.gain.exponentialRampToValueAtTime(0.001, time + 0.07);
+
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+
+    osc.start(time);
+    osc.stop(time + 0.08);
+  }
+
+  function nextNote() {
+    const sec = 60 / bpm;
+    nextNoteTime += sec;
+    currentBeat = (currentBeat + 1) % beatsPerBar;
+  }
+
+  function scheduler() {
+    while (nextNoteTime < audioCtx.currentTime + scheduleAheadTime) {
+      const accent = accentEl.checked && currentBeat === 0;
+      scheduleClick(nextNoteTime, accent);
+
+      dots.forEach((d, i) => d.classList.toggle("active", i === currentBeat));
+
+      nextNote();
     }
+    timerID = setTimeout(scheduler, lookahead);
+  }
 
-    function formatTime(sec) {
-      const minutes = Math.floor(sec / 60);
-      const seconds = sec % 60;
-      const mm = String(minutes).padStart(2, "0");
-      const ss = String(seconds).padStart(2, "0");
-      return `${mm}:${ss}`;
-    }
-
-    function updateDisplay(sec) {
-      timeDisplay.textContent = formatTime(sec);
-    }
-
-    function setInitialTime() {
-      computeTotalSeconds();
-      remainingSeconds = totalSeconds;
-      updateDisplay(remainingSeconds);
-    }
-
-    function setInputsDisabled(disabled) {
-      minutesInput.disabled = disabled;
-      secondsInput.disabled = disabled;
-      minutesInput.style.opacity = disabled ? 0.5 : 1;
-      secondsInput.style.opacity = disabled ? 0.5 : 1;
-    }
-
-    function flashIndicator() {
-      statusIndicator.classList.add("active");
-      setTimeout(() => {
-        statusIndicator.classList.remove("active");
-      }, 140);
-    }
-
-    function beep(times = 3) {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-
-      const interval = 0.18;
-
-      for (let i = 0; i < times; i++) {
-        const start = audioCtx.currentTime + i * interval;
-        const duration = 0.10;
-
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-
-        osc.type = "square";
-        osc.frequency.value = 1500;
-
-        gain.gain.setValueAtTime(0.35, start);
-        gain.gain.exponentialRampToValueAtTime(0.001, start + duration);
-
-        osc.connect(gain).connect(audioCtx.destination);
-        osc.start(start);
-        osc.stop(start + duration);
-      }
-    }
-
-    function startTimer() {
-      if (remainingSeconds <= 0) {
-        computeTotalSeconds();
-        remainingSeconds = totalSeconds;
-      }
-
-      if (remainingSeconds <= 0) return;
-
+  document.getElementById("start-stop").onclick = () => {
+    if (!isRunning) {
+      if (!audioCtx) audioCtx = new AudioContext();
+      nextNoteTime = audioCtx.currentTime + 0.05;
+      currentBeat = 0;
       isRunning = true;
-      setInputsDisabled(true);
-      toggleBtn.classList.add("stop");
-      btnLabel.textContent = "Pause";
-      btnIcon.textContent = "■";
-      flashIndicator();
-
-      if (intervalId) clearInterval(intervalId);
-
-      intervalId = setInterval(() => {
-        remainingSeconds -= 1;
-        if (remainingSeconds <= 0) {
-          remainingSeconds = 0;
-          updateDisplay(remainingSeconds);
-          stopTimer(false);
-          beep();
-          flashIndicator();
-        } else {
-          updateDisplay(remainingSeconds);
-          flashIndicator();
-        }
-      }, 1000);
-    }
-
-    function stopTimer(resetState = true) {
-      if (intervalId) {
-        clearInterval(intervalId);
-        intervalId = null;
-      }
+      scheduler();
+      document.getElementById("start-stop-label").innerText = "Stop";
+    } else {
       isRunning = false;
-      toggleBtn.classList.remove("stop");
-      btnIcon.textContent = "▶";
-      btnLabel.textContent = resetState ? "Start" : "Start";
-      setInputsDisabled(false);
+      clearTimeout(timerID);
+      document.getElementById("start-stop-label").innerText = "Start";
+      dots.forEach(d => d.classList.remove("active"));
     }
+  };
 
-    function toggleTimer() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        audioCtx.resume().catch(() => {});
-      }
+  document.getElementById("reset").onclick = () => {
+    bpm = 100;
+    beatsPerBar = 4;
+    tsEl.value = "4";
+    bpmEl.innerText = 100;
+    sliderEl.value = 100;
+    rebuildDots();
+  };
 
-      if (isRunning) {
-        stopTimer(false);
-      } else {
-        startTimer();
-      }
-    }
+  document.getElementById("bpm-up").onclick = () => {
+    bpm = Math.min(240, bpm + 1);
+    bpmEl.innerText = bpm;
+    sliderEl.value = bpm;
+  };
 
-    function resetTimer() {
-      stopTimer(true);
-      setInitialTime();
-    }
+  document.getElementById("bpm-down").onclick = () => {
+    bpm = Math.max(40, bpm - 1);
+    bpmEl.innerText = bpm;
+    sliderEl.value = bpm;
+  };
 
-    minutesInput.addEventListener("input", () => {
-      if (!isRunning) setInitialTime();
-    });
+  sliderEl.oninput = e => {
+    bpm = parseInt(e.target.value);
+    bpmEl.innerText = bpm;
+  };
 
-    secondsInput.addEventListener("input", () => {
-      if (!isRunning) setInitialTime();
-    });
+  tsEl.onchange = e => {
+    beatsPerBar = parseInt(e.target.value);
+    rebuildDots();
+  };
 
-    toggleBtn.addEventListener("click", toggleTimer);
-    resetBtn.addEventListener("click", resetTimer);
+  rebuildDots();
+</script>
 
-    // inicia com 5 minutos configurados
-    setInitialTime();
-  </script>
 </body>
 </html>
