@@ -162,56 +162,74 @@
 
     .bpm-slider-row { margin-top: 4px; }
 
-    .bpm-slider {
-      -webkit-appearance: none;
-      width: 100%;
-      height: 4px;
-      border-radius: 999px;
-      background: transparent;
-      outline: none;
-      cursor: pointer;
-    }
+/* Slider container */
+.bpm-slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 6px;
+  background: transparent;
+  cursor: pointer;
+  outline: none;
+}
 
-    /* Trilho – Chrome / Edge / Opera */
-    .bpm-slider::-webkit-slider-runnable-track {
-      background: #151522;          /* combina com o fundo dark */
-      height: 4px;
-      border-radius: 999px;
-    }
+/* TRACK — Chrome */
+.bpm-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12); /* trilho suave */
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
+}
 
-    /* Bolinha – Chrome / Edge / Opera */
-    .bpm-slider::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #545496;          /* 🔹 tom roxo do metrônomo */
-      box-shadow: 0 0 0 3px rgba(84, 84, 150, 0.35);
-      margin-top: -5px;             /* centraliza no trilho */
-    }
+/* THUMB — Chrome */
+.bpm-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 4px 12px rgba(255, 255, 255, 0.25),
+    0 0 0 4px rgba(255, 255, 255, 0.1);
+  margin-top: -6px; /* centralizar */
+  transition: 0.15s ease;
+}
 
-    /* Trilho – Firefox */
-    .bpm-slider::-moz-range-track {
-      background: #151522;
-      height: 4px;
-      border-radius: 999px;
-    }
+/* Hover */
+.bpm-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+}
 
-    /* Parte preenchida – Firefox */
-    .bpm-slider::-moz-range-progress {
-      background: #545496;          /* mesma cor roxa preenchendo */
-      height: 4px;
-      border-radius: 999px;
-    }
+/* TRACK — Firefox */
+.bpm-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.12);
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.6);
+}
 
-    /* Bolinha – Firefox */
-    .bpm-slider::-moz-range-thumb {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
-      background: #545496;
-      box-shadow: 0 0 0 3px rgba(84, 84, 150, 0.35);
-    }
+/* PROGRESS — Firefox */
+.bpm-slider::-moz-range-progress {
+  background: rgba(255, 255, 255, 0.25);
+  height: 6px;
+  border-radius: 10px;
+}
+
+/* THUMB — Firefox */
+.bpm-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #ffffff;
+  box-shadow:
+    0 4px 12px rgba(255, 255, 255, 0.25),
+    0 0 0 4px rgba(255, 255, 255, 0.1);
+  transition: 0.15s ease;
+}
+
+/* Hover Firefox */
+.bpm-slider::-moz-range-thumb:hover {
+  transform: scale(1.2);
+}
 
 
     .time-select {
